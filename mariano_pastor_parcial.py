@@ -5,12 +5,12 @@ ubicacion = "dt.json"
 diccionario_para_csv = []
 
 #lista menu de opciones
-lista_menu = ["-----BUENOS DIAS-----",
+lista_menu = ["\n-----BUENOS DIAS-----\n",
             "01) Mostrar la lista de todos los jugadores del Dream Team.",
             "02) Elegir un Jugador y ver todas sus estadisticas.",
             "03) Crear .CSV de jugador seleccionado de punto 2)",
             "04) Permitir al usuario buscar un jugador por su nombre y mostrar sus logros.",
-            "05)",
+            "05)Calcular y mostrar el promedio de puntos por partido de todo el equipo del Dream Team",
             "06)",
             "07)",
             "08)",
@@ -57,17 +57,34 @@ def crear_csv(ruta : str, diccionario : dict, tipo_apertura : str):#crea csv
         archivo.writelines(lista_fila_1)
         archivo.writelines(lista_fila_2)
 
-def obtener_lista_datos(lista : list, v_1 : str, v_2 : str)->list:
+def obtener_lista_datos(lista : list, v_1 : str, v_2 : str,v_3 : str ,orden : bool)->list:
     """
     muestra datos basicos de (2 variables)
-    toma lista y dos variables
+    toma lista y variables (dos o 3) 
     retorna una lista con str
     """
     lista_a_usar = []
-    for personas in lista:
-        lista_a_usar.append("{0} - {1}".format(personas[v_1],
-                                        personas[v_2]))
+    if orden == True:
+        for personas in lista:
+            lista_a_usar.append("{0} - {1}".format(personas[v_1],
+                                            personas[v_2]))
+    elif orden == False:
+        for personas in lista:
+            lista_a_usar.append("{0} - {1}".format(personas[v_1],
+                                            personas[v_2][v_3]))
     return lista_a_usar
+
+
+def obtener_lista_segun_rango(lista : list, rango : str, busqueda : str)->list:
+    """
+    crea una lista de todos los mach de busqueda que se le coloquen
+    """
+    lista_rango = []
+    verificacion = r"{0}+".format(busqueda.capitalize())
+    for indice in lista: 
+        if re.search(verificacion, indice[rango]):
+            lista_rango.append(indice) 
+    return lista_rango
 
 def imprimir_listas(lista : list):#imprime listas
     """
@@ -108,16 +125,16 @@ def pasaje_a_entero(numero: str) -> int:
         respuesta = -1
     return respuesta
 
-def pasaje_a_float(numero : str)->float:
-    """
-    toma un str, verifica que sea float y lo pasa.
-    """
-    verificacion = r"^\d.\d+$"
-    if re.match(verificacion, numero):
-        respuesta = float(numero)
-    else:
-        respuesta = -1
-    return respuesta
+# def pasaje_a_float(numero : str)->float:
+#     """
+#     toma un str, verifica que sea float y lo pasa.
+#     """
+#     verificacion = r"^\d.\d+$"
+#     if re.match(verificacion, numero):
+#         respuesta = float(numero)
+#     else:
+#         respuesta = -1
+#     return respuesta
 
 def verificador_de_parametro(lista : list, numero : int, agregado : int)->int:
     """
@@ -132,11 +149,51 @@ def verificador_de_parametro(lista : list, numero : int, agregado : int)->int:
         return respuesta
 
 def verificar_alfabetico(dato : str)->bool:
+    """
+    verifica que el dato este dedntro de los parametros
+    a a z minuscula o mayuscula e incluye el espacio
+    """
     verificacion = r"^[A-Za-z ]*$"
     devolver = False
     if re.match(verificacion,dato):
         devolver = True
     return devolver
+
+def calcular_promedio(lista : list, acceso_1 : str,acceso_2 : str)->float:
+    """
+    saca el promedio de una lista
+    """
+    suma = 0
+    divisor = len(lista)
+    for star in lista:
+        suma = suma + star[acceso_1][acceso_2]
+    promedio_final = suma / divisor
+    return promedio_final
+
+def ordenamiento_ascendente_decendente(lista : list, parametro : str, orden : str)->list:
+    lado_izquierdo = []
+    lado_derecho = []
+    if (len(lista)<=1):
+        return lista
+    else:
+        pivot = lista[0]
+        if orden == 'ascendente':
+            for jugador in lista[1:]:
+                if (jugador[parametro] > pivot[parametro]):
+                    lado_derecho.append(jugador)
+                else:
+                    lado_izquierdo.append(jugador)
+        elif orden == 'descendente':
+            for jugador in lista[1:]:
+                if (jugador[parametro] < pivot[parametro]):
+                    lado_derecho.append(jugador)
+                else:
+                    lado_izquierdo.append(jugador)
+    lado_izquierdo = ordenamiento_ascendente_decendente(lado_izquierdo, parametro, orden)
+    lado_izquierdo.append(pivot)
+    lado_derecho = ordenamiento_ascendente_decendente(lado_derecho, parametro, orden)
+    lado_izquierdo.extend(lado_derecho)
+    return lado_izquierdo
 
 while True:
     imprimir_listas(lista_menu)
@@ -145,7 +202,7 @@ while True:
     verificador_de_parametro(lista_menu, pregunta, 0)
     match pregunta:
         case 1:
-            estrellas = obtener_lista_datos(all_stars,"nombre","posicion")
+            estrellas = obtener_lista_datos(all_stars,"nombre","posicion","",True)
             imprimir_listas(estrellas)            
         case 2:
             jugadores = mostrar_jugadores(all_stars,"nombre")
@@ -167,13 +224,20 @@ while True:
                 print("primero debe realizarce el punto 2)")
         case 4:
             jugadores = mostrar_jugadores(all_stars,"nombre")
+            imprimir_listas(jugadores)
             pregunta = input("Escriba el nombre del Jugador: ")
             if verificar_alfabetico(pregunta) == True:
-                jugadore_elegido = obtener_lista_datos(,"nombre","logros")
-                imprimir_listas(jugadore_elegido)  
-            pass
+                lista_jugadores = obtener_lista_segun_rango(all_stars, "nombre", pregunta)
+                jugador_elegido = obtener_lista_datos(lista_jugadores,"nombre","logros","",True)
+                imprimir_listas(jugador_elegido)
+            else:
+                print("Lo siento, no ha ingresado un dato correcto de busqueda")  
         case 5:
-            pass
+            lista = ordenamiento_ascendente_decendente(all_stars, "nombre", "ascendente")
+            datos = obtener_lista_datos(all_stars,"nombre","estadisticas","promedio_puntos_por_partido",False)
+            promedio_general = calcular_promedio(all_stars, "estadisticas","promedio_puntos_por_partido")
+            print("El promedio general del equipo es: {0}".format(promedio_general))
+            imprimir_listas(datos)
         case 6:
             pass
         case 7:

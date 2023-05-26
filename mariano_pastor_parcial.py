@@ -215,7 +215,7 @@ def lista_may_men_promedio(lista : list, Valor_1 : str, Valor_2 : str, promedio 
 
 def impresor_mayor_cantidad_segun_dato(lista : list, dato : str):#imprime
     """
-    permite ingresarle dato y lista e imprime el dato le 
+    permite ingresarle dato y lista e imprime el  
     el mayor jugador del dato de estadistica seleccionado en esa lista 
     """
     lista = ordenamiento_de_listas(all_stars, "estadisticas", dato,2)

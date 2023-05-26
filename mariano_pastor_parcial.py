@@ -213,6 +213,15 @@ def lista_may_men_promedio(lista : list, Valor_1 : str, Valor_2 : str, promedio 
                 lista.append(persona)
     return lista
 
+def impresor_mayor_cantidad_segun_dato(lista : list, dato : str):#imprime
+    """
+    permite ingresarle dato y lista e imprime el dato le 
+    el mayor jugador del dato de estadistica seleccionado en esa lista 
+    """
+    lista = ordenamiento_de_listas(all_stars, "estadisticas", dato,2)
+    print("El jugador con mayor cantidad de {0} es {1} con un total de {2}!!!".format(re.sub(r"_"," ",dato),lista[-1]["nombre"],
+                                                                        lista[-1]["estadisticas"][dato]))
+
 while True:
     imprimir_listas(lista_menu)
     pregunta = input("ingrese el numero deseado: ")
@@ -273,17 +282,14 @@ while True:
                 print("Lo siento, no ha ingresado un nombre correcto.")  
             pass
         case 7:
-            lista = ordenamiento_de_listas(all_stars, "estadisticas", "rebotes_totales",2)
-            print("El jugador con mayor cantidad de rebotes totales es {0} con un total de {1} rebotes!!!".format(lista[-1]["nombre"],
-                                                                        lista[-1]["estadisticas"]["rebotes_totales"]))
+            dato = "rebotes_totales"
+            impresor_mayor_cantidad_segun_dato(all_stars, dato)
         case 8:
-            lista = ordenamiento_de_listas(all_stars, "estadisticas", "porcentaje_tiros_de_campo",2)
-            print("El jugador con mayor cantidad de tiros de campo es {0} con un total de {1} rebotes!!!".format(lista[-1]["nombre"],
-                                                                        lista[-1]["estadisticas"]["porcentaje_tiros_de_campo"]))
+            dato = "porcentaje_tiros_de_campo"
+            impresor_mayor_cantidad_segun_dato(all_stars, dato)
         case 9:
-            lista = ordenamiento_de_listas(all_stars, "estadisticas", "asistencias_totales",2)
-            print("El jugador con mayor cantidad de tiros de campo es {0} con un total de {1} rebotes!!!".format(lista[-1]["nombre"],
-                                                                        lista[-1]["estadisticas"]["asistencias_totales"]))
+            dato = "asistencias_totales"
+            impresor_mayor_cantidad_segun_dato(all_stars, dato)
         case 10:
             pregunta = input("Ingrese el numero donde se establecera el corte: ")
             pregunta = pasaje_a_float(pregunta)
@@ -318,13 +324,11 @@ while True:
             else:
                 print("lo lamento, nadie cumple con el requisito.")  
         case 13:
-                lista = ordenamiento_de_listas(all_stars,"estadisticas","robos_totales",2)
-                print("El jugador con mayor cantidad de robos totales es {0} con un total de {1} rebotes!!!".format(lista[-1]["nombre"],
-                                                                        lista[-1]["estadisticas"]["robos_totales"]))
+                dato = "robos_totales"
+                impresor_mayor_cantidad_segun_dato(all_stars, dato)
         case 14:
-                lista = ordenamiento_de_listas(all_stars,"estadisticas","bloqueos_totales",2)
-                print("El jugador con mayor cantidad de bloqueos totales es {0} con un total de {1} rebotes!!!".format(lista[-1]["nombre"],
-                                                                        lista[-1]["estadisticas"]["bloqueos_totales"]))
+                dato = "bloqueos_totales"
+                impresor_mayor_cantidad_segun_dato(all_stars, dato)
         case 15:
             pregunta = input("Ingrese el numero donde se establecera el corte: ")
             promedio = pasaje_a_float(pregunta)
@@ -335,9 +339,9 @@ while True:
                 print("Son los jugadores que estan por encima del rango seleccionado.")        
             else:
                 print("lo lamento, nadie cumple con el requisito.")
-        case 16:#no me anda siempre da lo mismo
+        case 16:
             lista = ordenamiento_de_listas(all_stars,"estadisticas","promedio_puntos_por_partido",2)
-            sin_menor = lista[8:]
+            sin_menor = lista[1:]
             promedio = calcular_promedio(sin_menor,"estadisticas","promedio_puntos_por_partido")
             print("El promedio de puntos por partido excluyendo al jugador que menos puntos anoto es {0}".format(promedio))
         case 17:

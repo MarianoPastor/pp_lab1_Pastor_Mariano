@@ -6,7 +6,7 @@ diccionario_para_csv = []
 
 #lista menu de opciones
 lista_menu = ["\n-----BUENOS DIAS-----\n",
-            "1) Mostrar la lista de todos los jugadores del Dream Team.",
+            "1) Mostrar la lista de todos los jugadores del Dream Team y su posicion.",
             "2) Elegir un Jugador y ver todas sus estadisticas.",
             "3) Crear .CSV de jugador seleccionado de punto 2).",
             "4) Buscar un jugador por su nombre y mostrar sus logros.",
@@ -255,6 +255,16 @@ def impresion_por_rango_mayor(lista_eleccion,dato_uno, dato_dos):
         imprimir_listas(estrellas)
         print("Son los jugadores que estan por encima del rango seleccionado.")
 
+def impresor_jugador_segun_logros(lista : list, dato : str, como_ver : str):#imprime
+    lista = []
+    for jugador in all_stars:
+        cantidad = len(jugador[dato])
+        jugador[como_ver] = cantidad
+        lista.append(jugador)
+    lista = ordenamiento_de_listas(all_stars, "cantidad_de_logros", "",1)
+    print("El jugador con mayor cantidad de {0} es {1} con un total de {2}!!!".format(re.sub(r"_"," ",como_ver),lista[-1]["nombre"],
+                                                                lista[-1][como_ver]))
+
 while True:
     imprimir_listas(lista_menu)
     pregunta = input("ingrese el numero deseado: ")
@@ -349,14 +359,7 @@ while True:
             promedio = calcular_promedio(sin_menor,"estadisticas","promedio_puntos_por_partido")
             print("El promedio de puntos por partido excluyendo al jugador que menos puntos anoto es {0}".format(promedio))
         case 17:
-            lista = []
-            for jugador in all_stars:
-                cantidad = len(jugador["logros"])
-                jugador["cantidad_de_logros"] = cantidad
-                lista.append(jugador)
-            lista = ordenamiento_de_listas(all_stars, "cantidad_de_logros", "",1)
-            print("El jugador con mayor cantidad de {0} es {1} con un total de {2}!!!".format(re.sub(r"_"," ","cantidad_de_logros"),lista[-1]["nombre"],
-                                                                        lista[-1]["cantidad_de_logros"]))
+            impresor_jugador_segun_logros(all_stars,"logros","datos_segun_logros")
         case 18:
             corte_segun_rango_dado(all_stars, "estadisticas", "porcentaje_tiros_triples")
             impresion_por_rango_mayor(lista_cortada,"estadisticas", "porcentaje_tiros_triples")
@@ -370,6 +373,8 @@ while True:
         case 21:
             print("\nGracias por usar el programa!")
             break
+        case 23:
+            pass
         case 0:
             print("\nDato erroneo, por favor ingresa una opcion valida.")
         case -1:

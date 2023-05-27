@@ -10,7 +10,7 @@ lista_menu = ["\n-----BUENOS DIAS-----\n",
             "2) Elegir un Jugador y ver todas sus estadisticas.",
             "3) Crear .CSV de jugador seleccionado de punto 2).",
             "4) Buscar un jugador por su nombre y mostrar sus logros.",
-            "5) Calcular y mostrar el promedio de puntos por partido de todo el equipo del Dream Team.",
+            "5) Mostrar el promedio de puntos por partido de todo el equipo del Dream Team.",
             "6) Buscar un nombre y mostrar si ese jugador es miembro del Salón de la Fama del Baloncesto.",
             "7) Mostrar el jugador con la mayor cantidad de rebotes totales.",
             "8) Mostrar el jugador con el mayor porcentaje de tiros de campo.",
@@ -22,11 +22,12 @@ lista_menu = ["\n-----BUENOS DIAS-----\n",
             "14) Mostrar el jugador con la mayor cantidad de bloqueos totales.",
             "15) Ingresar un valor y ver los jugadores que hayan tenido un porcentaje de tiros libres superior a ese valor.",
             "16) Mostrar el promedio de puntos por partido del equipo excluyendo al jugador con la menor cantidad de puntos por partido.",
-            "17)",
-            "18)",
-            "19)",
-            "20)",
-            "21) Salir del Programa."]
+            "17) Mostrar el jugador con la mayor cantidad de logros obtenidos",
+            "18) Ingresar un valor y ver los jugadores que hayan tenido un porcentaje de tiros triples superior a ese valor.",
+            "19) Mostrar el jugador con la mayor cantidad de temporadas jugadas",
+            "20) Ingresar un valor y ver los jugadores, ordenados por posición en la cancha, que hayan tenido un porcentaje de tiros de campo superior a ese valor.",
+            "21) SALIR DEL PROGRAMA."
+            "23) Bonus Track: Ver de cada jugador cuál es su posición en cada uno de las estadisticas en un .CSV."]
                      
 def abrir_json(ubicacion : str)->dict:
     """
@@ -74,8 +75,20 @@ def obtener_lista_datos(lista : list, v_1 : str, v_2 : str,v_3 : str ,orden : bo
                                             personas[v_2][v_3]))
     return lista_a_usar
 
+def obtener_lista_datos_3_elementos(lista : list, v_1 : str, v_2 : str,v_3 : str , v_4)->list:
+    """
+    muestra datos basicos de (2 variables)
+    toma lista y variables (dos o 3) 
+    retorna una lista con str
+    """
+    lista_a_usar = []
+    for personas in lista:
+            lista_a_usar.append("{0} - {1} - {2}".format(personas[v_1],personas[v_2],
+                                                   personas[v_3][v_4]))
+    return lista_a_usar
 
-def obtener_lista_segun_rango(lista : list, rango : str, busqueda : str)->list:
+
+def obtener_lista_segun_nombre(lista : list, rango : str, busqueda : str)->list:
     """
     crea una lista de todos los mach de busqueda que se le coloquen
     """
@@ -130,7 +143,7 @@ def pasaje_a_float(numero : str)->float:
     toma un str, verifica que sea float y lo pasa.
     """
     verificacion = r"^\d.\d+$"
-    if re.match(verificacion, numero):
+    if re.match(verificacion, numero) or numero.isdigit():
         respuesta = float(numero)
     else:
         respuesta = -1
@@ -170,7 +183,7 @@ def calcular_promedio(lista : list, acceso_1 : str,acceso_2 : str)->float:
     promedio_final = suma / divisor
     return promedio_final
 
-def ordenamiento_de_listas(lista_original:list, v_1, v_2, orden)->list:
+def ordenamiento_de_listas(lista_original:list, v_1 : str, v_2 : str, orden : int)->list:
     lista = lista_original[:]
     rango_a = len(lista)
     flag_swap = True
@@ -201,17 +214,17 @@ def listador_segun_parametros(lista : list,v_1 : str,v_2 : str)->list:
             lista_a_dar.append(personas)
     return lista_a_dar
 
-def lista_may_men_promedio(lista : list, Valor_1 : str, Valor_2 : str, promedio : float, orden : str)->list:
-    lista = []
+def lista_may_men_promedio(lista : list, Valor_1 : str, Valor_2 : str, promedio : float, orden : int)->list:
+    lista_a_dar = []
     if orden == 1:
         for persona in lista:
             if persona[Valor_1][Valor_2] > promedio:
-                lista.append(persona)
+                lista_a_dar.append(persona)
     elif orden == 2:
         for persona in lista:
             if persona[Valor_1][Valor_2] < promedio:
-                lista.append(persona)
-    return lista
+                lista_a_dar.append(persona)
+    return lista_a_dar
 
 def impresor_mayor_cantidad_segun_dato(lista : list, dato : str):#imprime
     """
@@ -221,6 +234,26 @@ def impresor_mayor_cantidad_segun_dato(lista : list, dato : str):#imprime
     lista = ordenamiento_de_listas(all_stars, "estadisticas", dato,2)
     print("El jugador con mayor cantidad de {0} es {1} con un total de {2}!!!".format(re.sub(r"_"," ",dato),lista[-1]["nombre"],
                                                                         lista[-1]["estadisticas"][dato]))
+
+def corte_segun_rango_dado(lista, dato_uno, dato_dos):
+    pregunta = input("Ingrese el numero donde se establecera el corte: ")
+    eleccion = pasaje_a_float(pregunta)
+    if eleccion == -1:
+        print("dato erroneo")
+    else:    
+        lista_eleccion = lista_may_men_promedio(lista,dato_uno,dato_dos,eleccion,1)
+        return lista_eleccion
+
+def impresion_por_rango_mayor(lista_eleccion,dato_uno, dato_dos): 
+    estrellas = obtener_lista_datos(lista_eleccion,"nombre",dato_uno,dato_dos,False)
+    if len(estrellas) < 1:
+        print("Lo lamento, nadie cumple el parametro")
+    elif len(estrellas) == 1:
+        imprimir_listas(estrellas)
+        print("Es el unico jugador que esta por encima del rango seleccionado.")
+    else:
+        imprimir_listas(estrellas)
+        print("Son los jugadores que estan por encima del rango seleccionado.")
 
 while True:
     imprimir_listas(lista_menu)
@@ -254,7 +287,7 @@ while True:
             imprimir_listas(jugadores)
             pregunta = input("Escriba el nombre del Jugador: ")
             if verificar_alfabetico(pregunta) == True:
-                lista_jugadores = obtener_lista_segun_rango(all_stars, "nombre", pregunta)
+                lista_jugadores = obtener_lista_segun_nombre(all_stars, "nombre", pregunta)
                 jugador_elegido = obtener_lista_datos(lista_jugadores,"nombre","logros","",True)
                 imprimir_listas(jugador_elegido)
             else:
@@ -270,7 +303,7 @@ while True:
             imprimir_listas(jugadores)
             pregunta = input("Escriba el nombre del Jugador: ")
             if verificar_alfabetico(pregunta) == True:
-                lista_jugadores = obtener_lista_segun_rango(all_stars, "nombre", pregunta)
+                lista_jugadores = obtener_lista_segun_nombre(all_stars, "nombre", pregunta)
                 jugador_elegido = listador_segun_parametros(lista_jugadores,"logros","Miembro del Salon de la Fama del Baloncesto")
                 a_printear = mostrar_jugadores(jugador_elegido,"nombre")
                 if len(a_printear) < 1:
@@ -282,58 +315,29 @@ while True:
                 print("Lo siento, no ha ingresado un nombre correcto.")  
             pass
         case 7:
-            dato = "rebotes_totales"
-            impresor_mayor_cantidad_segun_dato(all_stars, dato)
+            impresor_mayor_cantidad_segun_dato(all_stars, "rebotes_totales")
         case 8:
-            dato = "porcentaje_tiros_de_campo"
-            impresor_mayor_cantidad_segun_dato(all_stars, dato)
+            impresor_mayor_cantidad_segun_dato(all_stars, "porcentaje_tiros_de_campo")
         case 9:
-            dato = "asistencias_totales"
-            impresor_mayor_cantidad_segun_dato(all_stars, dato)
+            impresor_mayor_cantidad_segun_dato(all_stars, "asistencias_totales")
         case 10:
-            pregunta = input("Ingrese el numero donde se establecera el corte: ")
-            pregunta = pasaje_a_float(pregunta)
-            promedio = calcular_promedio(all_stars,"estadisticas","promedio_puntos_por_partido")
-            lista_pomedio = lista_may_men_promedio(all_stars,"estadisticas","promedio_puntos_por_partido",promedio,1)
-            estrellas = obtener_lista_datos(lista_pomedio,"nombre","estadisticas","promedio_puntos_por_partido",False)
-            if len(estrellas) > 0:
-                imprimir_listas(estrellas)
-                print("Son los jugadores que estan por encima del rango seleccionado.")        
-            else:
-                print("lo lamento, nadie cumple con el requisito.")    
+            lista_cortada = corte_segun_rango_dado(all_stars, "estadisticas", "promedio_puntos_por_partido")
+            impresion_por_rango_mayor(lista_cortada,"estadisticas", "promedio_puntos_por_partido")
         case 11:
-            pregunta = input("Ingrese el numero donde se establecera el corte: ")
-            pregunta = pasaje_a_float(pregunta)
-            promedio = calcular_promedio(all_stars,"estadisticas","promedio_rebotes_por_partido")
-            lista_pomedio = lista_may_men_promedio(all_stars,"estadisticas","promedio_rebotes_por_partido",promedio,1)
-            estrellas = obtener_lista_datos(lista_pomedio,"nombre","estadisticas","promedio_rebotes_por_partido",False)
-            if len(estrellas) > 0:
-                imprimir_listas(estrellas)
-                print("Son los jugadores que estan por encima del rango seleccionado.")        
-            else:
-                print("lo lamento, nadie cumple con el requisito.")  
+            lista_cortada = corte_segun_rango_dado(all_stars, "estadisticas", "promedio_rebotes_por_partido")
+            impresion_por_rango_mayor(lista_cortada,"estadisticas", "promedio_rebotes_por_partido")
         case 12:
-            pregunta = input("Ingrese el numero donde se establecera el corte: ")
-            pregunta = pasaje_a_float(pregunta)
-            promedio = calcular_promedio(all_stars,"estadisticas","promedio_asistencias_por_partido")
-            lista_pomedio = lista_may_men_promedio(all_stars,"estadisticas","promedio_asistencias_por_partido",promedio,1)
-            estrellas = obtener_lista_datos(lista_pomedio,"nombre","estadisticas","promedio_asistencias_por_partido",False)
-            if len(estrellas) > 0:
-                imprimir_listas(estrellas)
-                print("Son los jugadores que estan por encima del rango seleccionado.")        
-            else:
-                print("lo lamento, nadie cumple con el requisito.")  
+            lista_cortada = corte_segun_rango_dado(all_stars, "estadisticas", "promedio_asistencias_por_partido")  
+            impresion_por_rango_mayor(lista_cortada,"estadisticas", "promedio_asistencias_por_partido")    
         case 13:
-                dato = "robos_totales"
-                impresor_mayor_cantidad_segun_dato(all_stars, dato)
+            impresor_mayor_cantidad_segun_dato(all_stars, "robos_totales")
         case 14:
-                dato = "bloqueos_totales"
-                impresor_mayor_cantidad_segun_dato(all_stars, dato)
+            impresor_mayor_cantidad_segun_dato(all_stars, "bloqueos_totales")
         case 15:
             pregunta = input("Ingrese el numero donde se establecera el corte: ")
             promedio = pasaje_a_float(pregunta)
-            lista_pomedio = lista_may_men_promedio(all_stars,"estadisticas","porcentaje_tiros_libres",promedio,1)
-            estrellas = obtener_lista_datos(lista_pomedio,"nombre","estadisticas","porcentaje_tiros_libres",False)
+            lista_promedio = lista_may_men_promedio(all_stars,"estadisticas","porcentaje_tiros_libres",promedio,1)
+            estrellas = obtener_lista_datos(lista_promedio,"nombre","estadisticas","porcentaje_tiros_libres",False)
             if len(estrellas) > 0:
                 imprimir_listas(estrellas)
                 print("Son los jugadores que estan por encima del rango seleccionado.")        
@@ -345,13 +349,24 @@ while True:
             promedio = calcular_promedio(sin_menor,"estadisticas","promedio_puntos_por_partido")
             print("El promedio de puntos por partido excluyendo al jugador que menos puntos anoto es {0}".format(promedio))
         case 17:
-            pass
+            lista = []
+            for jugador in all_stars:
+                cantidad = len(jugador["logros"])
+                jugador["cantidad_de_logros"] = cantidad
+                lista.append(jugador)
+            lista = ordenamiento_de_listas(all_stars, "cantidad_de_logros", "",1)
+            print("El jugador con mayor cantidad de {0} es {1} con un total de {2}!!!".format(re.sub(r"_"," ","cantidad_de_logros"),lista[-1]["nombre"],
+                                                                        lista[-1]["cantidad_de_logros"]))
         case 18:
-            pass
+            corte_segun_rango_dado(all_stars, "estadisticas", "porcentaje_tiros_triples")
+            impresion_por_rango_mayor(lista_cortada,"estadisticas", "porcentaje_tiros_triples")
         case 19:
-            pass
+            impresor_mayor_cantidad_segun_dato(all_stars, "temporadas")
         case 20:
-            pass
+            lista = ordenamiento_de_listas(all_stars,"posicion","",1)
+            lista_depurada = corte_segun_rango_dado(lista, "estadisticas", "porcentaje_tiros_de_campo")
+            lista_a_imprimir = obtener_lista_datos_3_elementos(lista_depurada, "nombre","posicion","estadisticas","porcentaje_tiros_de_campo")
+            imprimir_listas(lista_a_imprimir)
         case 21:
             print("\nGracias por usar el programa!")
             break

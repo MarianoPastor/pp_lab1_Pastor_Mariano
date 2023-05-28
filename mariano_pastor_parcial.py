@@ -26,8 +26,8 @@ lista_menu = ["\n-----BUENOS DIAS-----\n",
             "18) Ingresar un valor y ver los jugadores que hayan tenido un porcentaje de tiros triples superior a ese valor.",
             "19) Mostrar el jugador con la mayor cantidad de temporadas jugadas",
             "20) Ingresar un valor y ver los jugadores, ordenados por posición en la cancha, que hayan tenido un porcentaje de tiros de campo superior a ese valor.",
-            "21) SALIR DEL PROGRAMA.",
-            "23) Bonus Track: Ver de cada jugador cuál es su posición en cada uno de las estadisticas en un .CSV."]
+            "23) Bonus Track: Ver de cada jugador cuál es su posición en cada uno de las estadisticas en un .CSV.",
+            "21) SALIR DEL PROGRAMA."]            
                      
 def abrir_json(ubicacion : str)->dict:
     """
@@ -131,8 +131,7 @@ def pasaje_a_entero(numero: str) -> int:
     """
     Toma un str, verifica que sea entero y lo pasa.
     """
-    verificacion = r"^\d+$"
-    if re.match(verificacion, numero):
+    if re.match(r"^\d+$", numero):
         respuesta = int(numero)
     else:
         respuesta = -1
@@ -142,8 +141,7 @@ def pasaje_a_float(numero : str)->float:
     """
     toma un str, verifica que sea float o entero y lo pasa a float.
     """
-    verificacion = r"^\d+\.{1}\d+"
-    if re.match(verificacion, numero) or numero.isdigit():
+    if re.match(r"^\d+\.{1}\d+", numero) or numero.isdigit():
         respuesta = float(numero)
     else:
         respuesta = -1
@@ -281,6 +279,77 @@ def impresion_mayor_jugador_logros(lista : list, como_ver : str):#imprime
     print("El jugador con mayor cantidad de {0} es {1} con un total de {2}!!!".format(re.sub(r"_"," ",como_ver),lista_impresion[-1]["nombre"],
                                                                 lista_impresion[-1][como_ver]))
 
+def CSV_bonus_track():
+    """
+    crea un .csv con los jugadores rankeados por sus estadisticas, con puntos segun ubicacion
+    en lista
+    """
+    ruta_bonus_track = "BONUS_TRACK.csv"
+    lista_temporadas = ordenamiento_de_listas(all_stars,"estadisticas","temporadas",2)
+    lista_temporadas = listar_jugadores(lista_temporadas,"nombre") 
+    lista_puntos_totales = ordenamiento_de_listas(all_stars,"estadisticas","puntos_totales",2)
+    lista_puntos_totales = listar_jugadores(lista_puntos_totales,"nombre") 
+    lista_promedio_puntos_por_partido = ordenamiento_de_listas(all_stars,"estadisticas","promedio_puntos_por_partido",2)
+    lista_promedio_puntos_por_partido = listar_jugadores(lista_promedio_puntos_por_partido,"nombre")
+    lista_rebotes_totales = ordenamiento_de_listas(all_stars,"estadisticas","rebotes_totales",2)
+    lista_rebotes_totales = listar_jugadores(lista_rebotes_totales,"nombre")
+    lista_promedio_rebotes_por_partido = ordenamiento_de_listas(all_stars,"estadisticas","promedio_rebotes_por_partido",2)
+    lista_promedio_rebotes_por_partido = listar_jugadores(lista_promedio_rebotes_por_partido,"nombre")
+    lista_asistencias_totales = ordenamiento_de_listas(all_stars,"estadisticas","asistencias_totales",2)
+    lista_asistencias_totales = listar_jugadores(lista_asistencias_totales,"nombre")
+    lista_promedio_asistencias_por_partido = ordenamiento_de_listas(all_stars,"estadisticas","promedio_asistencias_por_partido",2)
+    lista_promedio_asistencias_por_partido = listar_jugadores(lista_promedio_asistencias_por_partido,"nombre")
+    lista_robos_totales = ordenamiento_de_listas(all_stars,"estadisticas","robos_totales",2)
+    lista_robos_totales = listar_jugadores(lista_robos_totales,"nombre")
+    lista_bloqueos_totales = ordenamiento_de_listas(all_stars,"estadisticas","bloqueos_totales",2)
+    lista_bloqueos_totales = listar_jugadores(lista_bloqueos_totales,"nombre")
+    lista_porcentaje_tiros_de_campo = ordenamiento_de_listas(all_stars,"estadisticas","porcentaje_tiros_de_campo",2)
+    lista_porcentaje_tiros_de_campo = listar_jugadores(lista_porcentaje_tiros_de_campo,"nombre")
+    lista_porcentaje_tiros_libres = ordenamiento_de_listas(all_stars,"estadisticas","porcentaje_tiros_libres",2)
+    lista_porcentaje_tiros_libres = listar_jugadores(lista_porcentaje_tiros_libres,"nombre")
+    lista_porcentaje_tiros_triples = ordenamiento_de_listas(all_stars,"estadisticas","porcentaje_tiros_triples",2)
+    lista_porcentaje_tiros_triples = listar_jugadores(lista_porcentaje_tiros_triples,"nombre")
+    lista_segun_logros = listar_segun_logros(all_stars,"logros","cantidad_de_logros")
+    lista_segun_logros = ordenamiento_de_listas(lista_segun_logros,"cantidad_de_logros","",1)
+    lista_segun_logros = listar_jugadores(lista_segun_logros,"nombre")
+    lista_Michael_Jordan = ["Michael Jordan"]
+    lista_Magic_Johnson = ["Magic Johnson"]
+    lista_Larry_Bird = ["Larry Bird"]
+    lista_Charles_Barkley = ["Charles Barkley"]
+    lista_Scottie_Pippen = ["Scottie Pippen"]
+    lista_David_Robinson = ["David Robinson"]
+    lista_Patrick_Ewing = ["Patrick Ewing"]
+    lista_Karl_Malone = ["Karl Malone"]
+    lista_John_Stockton = ["John Stockton"]
+    lista_Clyde_Drexler = ["Clyde Drexler"]
+    lista_Chris_Mullin = ["Chris Mullin"]
+    lista_Christian_Laettner = ["Christian Laettner"]
+
+    listas_jugadores = [lista_Michael_Jordan,lista_Magic_Johnson,lista_Larry_Bird,lista_Charles_Barkley,lista_Scottie_Pippen,lista_David_Robinson,
+                        lista_Patrick_Ewing,lista_Karl_Malone,lista_John_Stockton,lista_Clyde_Drexler,lista_Chris_Mullin,lista_Christian_Laettner]
+    lista_ordenada_por_ranking = [lista_temporadas,lista_puntos_totales,lista_promedio_puntos_por_partido,lista_rebotes_totales,
+                                lista_promedio_rebotes_por_partido,lista_asistencias_totales,lista_promedio_asistencias_por_partido,
+                                lista_robos_totales,lista_bloqueos_totales,lista_porcentaje_tiros_de_campo,lista_porcentaje_tiros_libres,
+                                lista_porcentaje_tiros_triples,lista_segun_logros]
+   
+    lista_encabezado_csv = ["nombre",]
+    for clave, valor in all_stars[0]["estadisticas"].items():
+        clave += ","
+        lista_encabezado_csv.append(clave)
+    lista_encabezado_csv += "\n"
+
+    for jugadores in listas_jugadores:
+        for lista in lista_ordenada_por_ranking:
+            for i in range(len(lista)):
+                if re.search(r"{0}".format(jugadores[0]),lista[i]):
+                    i = i + 1 
+                    jugadores.append(i)
+
+    with open(ruta_bonus_track,"w+") as archivo:
+            archivo.writelines(lista_encabezado_csv)
+            for indice in range(len(listas_jugadores)):
+                archivo.writelines("{0}\n".format(listas_jugadores[indice]))
+
 while True:
     imprimir_listas(lista_menu)
     pregunta = input("ingrese el numero deseado: ")
@@ -388,7 +457,7 @@ while True:
         case 21:
             print("\nGracias por usar el programa!")
             break
-        # case 23:
-        #     pass
+        case 23:
+            CSV_bonus_track()
         case _:
             print("\nDato erroneo, por favor ingresa una opcion valida.")

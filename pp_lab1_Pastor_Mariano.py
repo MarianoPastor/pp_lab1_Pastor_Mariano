@@ -157,7 +157,7 @@ def verificador_de_parametro(lista : list, numero : int, agregado : int)->int:
         respuesta = -1
     else:
         respuesta = numero + agregado
-        return respuesta
+    return respuesta
 
 def verificar_alfabetico(dato : str)->bool:
     """

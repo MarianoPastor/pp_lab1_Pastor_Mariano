@@ -32,6 +32,7 @@ lista_menu = ["\n-----BUENOS DIAS-----\n",
             "23) Bonus Track: Ver de cada jugador cuál es su posición en cada uno de las estadisticas en un .CSV.",
             "24) Ver qué jugador tiene las mejores estadísticas en cada valor.",
             "25) Ver la lista de jugadores ordenadas por la cantidad de All-Star de forma descendente.",
+            "26) Saber quien es el mejor jugador en base a posicion en sus estadisticas (EN REPARACION)"
             "21) SALIR DEL PROGRAMA."]            
                      
 def abrir_json(ubicacion : str)->dict:
@@ -520,24 +521,23 @@ while True:
                 print("Nombre: {0} - Veces All-Stars: {1}".format(jugador["nombre"],jugador["all-stars"]))
 
         case 26:
-            lista = leer_csv("/home/dorbi/Escritorio/1º Parcial/BONUS_TRACK.csv")
-            lista = lista[:]
-            
+            lista = []
+            for jugador in all_stars:
+                valor_estadisticas = 0
+                for clave, valor in jugador["estadisticas"].items():
+                    valor_estadisticas += valor
+                jugador["estadisticas"]["valor estadisticas"] = valor_estadisticas
+                lista.append(jugador)
+            lista = ordenamiento_de_listas(lista, "estadisticas", "valor estadisticas", 2)
+            impresor_mayor_cantidad_segun_dato(lista, "valor estadisticas")
+
             
         case _:
             print("\nDato erroneo, por favor ingresa una opcion valida.")
 
 
                 
-""
 """
-2
-Mostrar la lista de jugadores ordenadas por la cantidad de All-Star de forma descendente. La salida por pantalla debe tener un formato similar a este:
-Michael Jordan (14 veces All Star)
-Magic Johnson (12 veces All-Star)
-...
-
-
 4
 Determinar qué jugador tiene las mejores estadísticas de todos.
 

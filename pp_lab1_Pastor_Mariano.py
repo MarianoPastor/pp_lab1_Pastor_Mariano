@@ -3,6 +3,7 @@ import re
 import json
 ubicacion = "dt.json"
 diccionario_para_csv = []
+ruta_bonus_track = "BONUS_TRACK.csv"
 
 #lista menu de opciones
 lista_menu = ["\n-----BUENOS DIAS-----\n",
@@ -26,7 +27,10 @@ lista_menu = ["\n-----BUENOS DIAS-----\n",
             "18) Ingresar un valor y ver los jugadores que hayan tenido un porcentaje de tiros triples superior a ese valor.",
             "19) Mostrar el jugador con la mayor cantidad de temporadas jugadas",
             "20) Ingresar un valor y ver los jugadores, ordenados por posición en la cancha, que hayan tenido un porcentaje de tiros de campo superior a ese valor.",
+            "22) Ver la cantidad de jugadores en cada posicion.",
             "23) Bonus Track: Ver de cada jugador cuál es su posición en cada uno de las estadisticas en un .CSV.",
+            "24) Ver qué jugador tiene las mejores estadísticas en cada valor.",
+            "25) Ver la lista de jugadores ordenadas por la cantidad de All-Star de forma descendente.",
             "21) SALIR DEL PROGRAMA."]            
                      
 def abrir_json(ubicacion : str)->dict:
@@ -284,7 +288,7 @@ def CSV_bonus_track():
     crea un .csv con los jugadores rankeados por sus estadisticas, con puntos segun ubicacion
     en lista
     """
-    ruta_bonus_track = "BONUS_TRACK.csv"
+    
     lista_segun_logros = listar_segun_logros(all_stars,"logros","cantidad_de_logros")
     lista_temporadas = ordenamiento_de_listas(all_stars,"estadisticas","temporadas",2)
     lista_temporadas = listar_jugadores(lista_temporadas,"nombre") 
@@ -352,6 +356,30 @@ def CSV_bonus_track():
             archivo.writelines(lista_encabezado_csv)
             for indice in range(len(listas_jugadores)):
                 archivo.writelines("{0}\n".format(listas_jugadores[indice]))
+
+def listador_parametros(lista: list, valor: str) -> list:
+    """
+    genera un parametro con el valor dado, contavilizando ocurrencias
+    """
+    a_dar = {}
+    for personas in lista:
+        for clave, llave in personas.items():
+            if clave == valor:
+                if llave in a_dar:
+                    a_dar[llave] = a_dar[llave]+1
+                else:
+                    a_dar[llave] = 1
+    return a_dar
+
+def pasaje_logro_a_obtencion_numerica(all_stars: list, dato: str) -> list:
+    lista = []
+    for jugador in all_stars:
+        for logros in jugador[dato]:
+                if re.match(r"\d veces All-Star", logros) == True:
+                    jugador["all-stars"] = re.sub(r"A-Za-z ","",logros)
+                    lista.append(jugador)
+        return lista
+
 
 while True:
     imprimir_listas(lista_menu)
@@ -462,5 +490,36 @@ while True:
             break
         case 23:
             CSV_bonus_track()
+        case 22:
+            operador = listador_parametros(all_stars,"posicion")
+            print(operador)
+        case 24:
+            for valor, llave in all_stars[0]["estadisticas"].items():
+                impresor_mayor_cantidad_segun_dato(all_stars, valor)
+        case 25:
+            lista = pasaje_logro_a_obtencion_numerica(all_stars,"logros")
+            print(lista)
+            lista = ordenamiento_de_listas(lista,"all-stars","",1)
+            print(lista)
+            lista = lista[::-1]
+            print(lista)
+            print("Nombre: {0} Veces All Star: {0}\n".format(lista["nombre"],lista["all-Stars"]))
+            
         case _:
             print("\nDato erroneo, por favor ingresa una opcion valida.")
+
+
+                
+""
+"""
+2
+Mostrar la lista de jugadores ordenadas por la cantidad de All-Star de forma descendente. La salida por pantalla debe tener un formato similar a este:
+Michael Jordan (14 veces All Star)
+Magic Johnson (12 veces All-Star)
+...
+
+
+4
+Determinar qué jugador tiene las mejores estadísticas de todos.
+
+"""

@@ -1,5 +1,6 @@
 # Pastor Mariano 1H Tutor Alejo
 import re
+import csv
 import json
 ubicacion = "dt.json"
 diccionario_para_csv = []
@@ -43,6 +44,15 @@ def abrir_json(ubicacion : str)->dict:
         return jugadores_nba
 stars = abrir_json(ubicacion)#creamos un volatil para usar
 all_stars = stars[:]
+
+def leer_csv(direccion : str)->list:
+    filas = []
+    with open(direccion, 'r') as archivo:
+        lector_csv = csv.reader(archivo)
+        for fila in lector_csv:
+            filas.append(fila)
+    return filas
+
 
 def crear_csv(ruta : str, diccionario : dict, tipo_apertura : str):#crea csv
     """
@@ -372,13 +382,19 @@ def listador_parametros(lista: list, valor: str) -> list:
     return a_dar
 
 def pasaje_logro_a_obtencion_numerica(all_stars: list, dato: str) -> list:
+    """
+    Toma una lista y un dato, elimina las letras y espacios, dejando solo los números.
+    Luego, genera un nuevo elemento llamado "all-stars" y le asigna el valor obtenido.
+    Finalmente, los jugadores se agregan a una lista y se retorna.
+    """
     lista = []
     for jugador in all_stars:
-        for logros in jugador[dato]:
-                if re.match(r"\d veces All-Star", logros) == True:
-                    jugador["all-stars"] = re.sub(r"A-Za-z ","",logros)
-                    lista.append(jugador)
-        return lista
+        for logro in jugador[dato]:
+            if re.match(r"\d+ veces All-Star", logro):
+                veces_all_star = re.findall(r"\d+", logro)
+                jugador["all-stars"] = int(veces_all_star[0])
+                lista.append(jugador)
+    return lista
 
 
 while True:
@@ -498,12 +514,15 @@ while True:
                 impresor_mayor_cantidad_segun_dato(all_stars, valor)
         case 25:
             lista = pasaje_logro_a_obtencion_numerica(all_stars,"logros")
-            print(lista)
             lista = ordenamiento_de_listas(lista,"all-stars","",1)
-            print(lista)
             lista = lista[::-1]
-            print(lista)
-            print("Nombre: {0} Veces All Star: {0}\n".format(lista["nombre"],lista["all-Stars"]))
+            for jugador in lista:
+                print("Nombre: {0} - Veces All-Stars: {1}".format(jugador["nombre"],jugador["all-stars"]))
+
+        case 26:
+            lista = leer_csv("/home/dorbi/Escritorio/1º Parcial/BONUS_TRACK.csv")
+            lista = lista[:]
+            
             
         case _:
             print("\nDato erroneo, por favor ingresa una opcion valida.")

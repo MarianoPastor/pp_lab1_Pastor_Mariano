@@ -32,7 +32,7 @@ lista_menu = ["\n-----BUENOS DIAS-----\n",
             "23) Bonus Track: Ver de cada jugador cuál es su posición en cada uno de las estadisticas en un .CSV.",
             "24) Ver qué jugador tiene las mejores estadísticas en cada valor.",
             "25) Ver la lista de jugadores ordenadas por la cantidad de All-Star de forma descendente.",
-            "26) Saber quien es el mejor jugador en base a posicion en sus estadisticas (EN REPARACION)"
+            "26) Saber quien es el mejor jugador en base a posicion en sus estadisticas."
             "21) SALIR DEL PROGRAMA."]            
                      
 def abrir_json(ubicacion : str)->dict:
@@ -530,15 +530,5 @@ while True:
                 lista.append(jugador)
             lista = ordenamiento_de_listas(lista, "estadisticas", "valor estadisticas", 2)
             impresor_mayor_cantidad_segun_dato(lista, "valor estadisticas")
-
-            
         case _:
             print("\nDato erroneo, por favor ingresa una opcion valida.")
-
-
-                
-"""
-4
-Determinar qué jugador tiene las mejores estadísticas de todos.
-
-"""
